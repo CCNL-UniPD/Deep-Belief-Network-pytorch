@@ -28,11 +28,10 @@ class RBM(nn.Module):
                  use_gpu=False):
         """
         Defines the model
-        W:Wheights shape (visible_units,hidden_units)
+        W:Weights shape (visible_units,hidden_units)
         c:hidden unit bias shape (hidden_units , )
-        b : visible unit bias shape(visisble_units ,)
+        b : visible unit bias shape(visible_units ,)
         """
-
         super(RBM, self).__init__()
         self.desc = "RBM"
 
@@ -89,7 +88,6 @@ class RBM(nn.Module):
         X here is the probabilities in the hidden layer
         :returns - X_prob - the new reconstructed layers(probabilities)
                     sample_X_prob - sample of new layer(Gibbs Sampling)
-
         """
         # computing hidden activations and then converting into probabilities
         X_prob = torch.matmul(X, self.W.transpose(0, 1))
@@ -117,7 +115,6 @@ class RBM(nn.Module):
     def reconstruct(self, X, n_gibbs):
         """
         This will reconstruct the sample with k steps of gibbs Sampling
-
         """
         v = X
         for i in range(n_gibbs):
@@ -177,7 +174,7 @@ class RBM(nn.Module):
         return error, torch.sum(torch.abs(grad_update))
 
     def forward(self, input_data):
-        'data->hidden'
+        """data->hidden"""
         return self.to_hidden(input_data)
 
     def step(self, input_data, epoch, num_epochs):
@@ -227,7 +224,7 @@ class RBM(nn.Module):
                                                        num_epochs)
 
             print("|{:02d}    |{:.4f}    "
-                  "|{:.4f}    |{:.4f}    "
+                  "|{:.4f}    |{:.4f} "
                   "|{:.4f}    |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
 
         return

@@ -68,11 +68,9 @@ class DBN(nn.Module):
 
     def forward(self, input_data):
         """
-
-            running the forward pass
-            do not confuse with training this just runs a foward pass
+        running the forward pass
+        do not confuse with training this just runs a foward pass
         """
-
         v = input_data
         for i in range(len(self.rbm_layers)):
             v = v.view((v.shape[0], -1)).type(torch.FloatTensor)  # flatten
@@ -81,10 +79,8 @@ class DBN(nn.Module):
 
     def reconstruct(self, input_data):
         """
-
         go till the final layer and then reconstruct
         """
-
         h = input_data
         p_h = 0
         for i in range(len(self.rbm_layers)):
@@ -103,16 +99,14 @@ class DBN(nn.Module):
                      num_epochs=50,
                      batch_size=10):
         """
-
         Greedy Layer By Layer training
         Keeping previous layers as static
         """
-
         tmp = train_data
 
         for i in range(len(self.rbm_layers)):
             print("-" * 20)
-            print("Training the {} st rbm layer".format(i + 1))
+            print("Training RBM layer {}".format(i + 1))
 
             # transform to torch tensors
             tensor_x = tmp.type(torch.FloatTensor)
