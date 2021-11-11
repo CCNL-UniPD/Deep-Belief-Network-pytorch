@@ -14,8 +14,7 @@ class DBN(nn.Module):
                  learning_rate_decay=False,
                  xavier_init=False,
                  increase_to_cd_k=False,
-                 use_gpu=False
-                 ):
+                 use_gpu=False):
         super(DBN, self).__init__()
 
         self.n_layers = len(hidden_units)
@@ -42,21 +41,21 @@ class DBN(nn.Module):
 
         # rbm_layers = [RBM(rbn_nodes[i-1] , rbm_nodes[i],use_gpu=use_cuda) for i in range(1,len(rbm_nodes))]
         self.W_rec = [
-            nn.Parameter(
-                self.rbm_layers[i].W.data.clone()) for i in range(
-                self.n_layers - 1)]
+            nn.Parameter(self.rbm_layers[i].W.data.clone())
+            for i in range(self.n_layers - 1)
+        ]
         self.W_gen = [
-            nn.Parameter(
-                self.rbm_layers[i].W.data) for i in range(
-                self.n_layers - 1)]
+            nn.Parameter(self.rbm_layers[i].W.data)
+            for i in range(self.n_layers - 1)
+        ]
         self.bias_rec = [
-            nn.Parameter(
-                self.rbm_layers[i].h_bias.data.clone()) for i in range(
-                self.n_layers - 1)]
+            nn.Parameter(self.rbm_layers[i].h_bias.data.clone())
+            for i in range(self.n_layers - 1)
+        ]
         self.bias_gen = [
-            nn.Parameter(
-                self.rbm_layers[i].v_bias.data) for i in range(
-                self.n_layers - 1)]
+            nn.Parameter(self.rbm_layers[i].v_bias.data)
+            for i in range(self.n_layers - 1)
+        ]
         self.W_mem = nn.Parameter(self.rbm_layers[-1].W.data)
         self.v_bias_mem = nn.Parameter(self.rbm_layers[-1].v_bias.data)
         self.h_bias_mem = nn.Parameter(self.rbm_layers[-1].h_bias.data)
@@ -98,18 +97,16 @@ class DBN(nn.Module):
             p_v, v = self.rbm_layers[i].to_visible(v)
         return p_v, v
 
-    def train_static(
-            self,
-            train_data,
-            train_labels,
-            num_epochs=50,
-            batch_size=10):
+    def train_static(self,
+                     train_data,
+                     train_labels,
+                     num_epochs=50,
+                     batch_size=10):
         """
 
         Greedy Layer By Layer training
         Keeping previous layers as static
         """
-
 
         tmp = train_data
 
@@ -123,7 +120,8 @@ class DBN(nn.Module):
             _dataset = torch.utils.data.TensorDataset(
                 tensor_x, tensor_y)  # create your datset
             _dataloader = torch.utils.data.DataLoader(
-                _dataset, batch_size=batch_size, drop_last=True)  # create your dataloader
+                _dataset, batch_size=batch_size,
+                drop_last=True)  # create your dataloader
 
             self.rbm_layers[i].train(_dataloader, num_epochs, batch_size)
             # print(train_data.shape)
@@ -136,20 +134,15 @@ class DBN(nn.Module):
             # print(v.shape)
         return
 
-    def train_ith(
-            self,
-            train_data,
-            train_labels,
-            num_epochs,
-            batch_size,
-            ith_layer):
+    def train_ith(self, train_data, train_labels, num_epochs, batch_size,
+                  ith_layer):
         """
 
         taking ith layer at once
         can be used for fine tuning
         """
 
-        if(ith_layer - 1 > len(self.rbm_layers) or ith_layer <= 0):
+        if (ith_layer - 1 > len(self.rbm_layers) or ith_layer <= 0):
             print("Layer index out of range")
             return
         ith_layer = ith_layer - 1
@@ -163,7 +156,8 @@ class DBN(nn.Module):
         tensor_y = train_labels.type(torch.FloatTensor)
         _dataset = torch.utils.data.TensorDataset(
             tensor_x, tensor_y)  # create your datset
-        _dataloader = torch.utils.data.DataLoader(
-            _dataset, batch_size=batch_size, drop_last=True)
+        _dataloader = torch.utils.data.DataLoader(_dataset,
+                                                  batch_size=batch_size,
+                                                  drop_last=True)
         self.rbm_layers[ith_layer].train(_dataloader, num_epochs, batch_size)
         return
