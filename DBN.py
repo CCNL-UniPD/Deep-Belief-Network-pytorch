@@ -127,7 +127,7 @@ class DBN(nn.Module):
             # print(train_data.shape)
             v = tmp.view((tmp.shape[0], -1)).type(torch.FloatTensor)  # flatten
             if self.cuda():
-                v.cuda()
+                v = v.cuda()
             print(v.device)
             p_v, v = self.rbm_layers[i].forward(v)
             tmp = v
