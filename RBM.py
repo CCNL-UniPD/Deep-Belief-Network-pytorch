@@ -226,8 +226,8 @@ class RBM(nn.Module):
                 cost_[i - 1], grad_[i - 1] = self.step(batch, epoch,
                                                        num_epochs)
 
-            print("|{:02d}    |{:.4f}      "
-                  "|{:.4f}      |{:.4f}      "
-                  "|{:.4f}      |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
+            print("|{:02d}    |{:.4f}    "
+                  "|{:.4f}    |{:.4f}    "
+                  "|{:.4f}    |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
 
         return
