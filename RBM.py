@@ -69,6 +69,7 @@ class RBM(nn.Module):
                     sample_X_prob - Gibbs sampling of hidden (1 or 0) based
                                 on the value
         '''
+        print(X.device, self.W.device)
         X_prob = torch.matmul(X, self.W)
         X_prob = torch.add(X_prob, self.h_bias)  # W.x + c
         X_prob = torch.sigmoid(X_prob)
