@@ -219,12 +219,11 @@ class RBM(nn.Module):
 
             for i, (batch, _) in tqdm(enumerate(train_loader),
                                       ascii=True,
-                                      desc="RBM fitting",
-                                      file=sys.stdout):
+                                      desc="RBM fitting"):
 
                 batch = batch.view(len(batch), self.visible_units)
 
-                if (self.use_gpu):
+                if self.use_gpu:
                     batch = batch.cuda()
                 cost_[i - 1], grad_[i - 1] = self.step(batch, epoch,
                                                        num_epochs)
