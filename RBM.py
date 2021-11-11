@@ -77,7 +77,6 @@ class RBM(nn.Module):
                     sample_X_prob - Gibbs sampling of hidden (1 or 0) based
                                 on the value
         """
-        print(X.device, self.W.device)
         X_prob = torch.matmul(X, self.W)
         X_prob = torch.add(X_prob, self.h_bias)  # W.x + c
         X_prob = torch.sigmoid(X_prob)
@@ -132,7 +131,6 @@ class RBM(nn.Module):
     def contrastive_divergence(self, input_data, training=True,
                                n_gibbs_sampling_steps=1, lr=0.001):
         # positive phase
-
         positive_hidden_probabilities, positive_hidden_act = self.to_hidden(
             input_data)
 
@@ -140,7 +138,7 @@ class RBM(nn.Module):
         positive_associations = torch.matmul(
             input_data.t(), positive_hidden_act)
 
-        # negetive phase
+        # negative phase
         hidden_activations = positive_hidden_act
         for i in range(n_gibbs_sampling_steps):
             visible_probabilities, _ = self.to_visible(hidden_activations)
