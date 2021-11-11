@@ -59,6 +59,11 @@ class RBM(nn.Module):
         self.h_bias = torch.zeros(self.hidden_units)  # hidden layer bias
         self.v_bias = torch.zeros(self.visible_units)  # visible layer bias
 
+        if self.use_gpu:
+            self.W = self.W.cuda()
+            self.h_bias = self.h_bias.cuda()
+            self.v_bias = self.v_bias.cuda()
+
     def to_hidden(self, X):
         '''
         Converts the data in visible layer to hidden layer

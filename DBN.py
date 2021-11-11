@@ -40,6 +40,12 @@ class DBN(nn.Module):
 
             self.rbm_layers.append(rbm)
 
+        if self.use_gpu:
+            for layer in self.rbm_layers:
+                layer.W = layer.W.cuda()
+                layer.h_bias = layer.h_bias.cuda()
+                layer.v_bias = layer.v_bias.cuda()
+
         # rbm_layers = [RBM(rbn_nodes[i-1] , rbm_nodes[i],use_gpu=use_cuda) for i in range(1,len(rbm_nodes))]
         self.W_rec = [
             nn.Parameter(
