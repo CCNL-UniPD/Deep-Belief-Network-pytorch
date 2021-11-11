@@ -40,12 +40,6 @@ class DBN(nn.Module):
 
             self.rbm_layers.append(rbm)
 
-        if self.use_gpu:
-            for layer in self.rbm_layers:
-                layer.W = layer.W.cuda()
-                layer.h_bias = layer.h_bias.cuda()
-                layer.v_bias = layer.v_bias.cuda()
-
         # rbm_layers = [RBM(rbn_nodes[i-1] , rbm_nodes[i],use_gpu=use_cuda) for i in range(1,len(rbm_nodes))]
         self.W_rec = [
             nn.Parameter(
@@ -74,10 +68,12 @@ class DBN(nn.Module):
             self.register_parameter('bias_gen%i' % i, self.bias_gen[i])
 
     def forward(self, input_data):
-        '''
+        """
+
             running the forward pass
             do not confuse with training this just runs a foward pass
-        '''
+        """
+
         v = input_data
         for i in range(len(self.rbm_layers)):
             v = v.view((v.shape[0], -1)).type(torch.FloatTensor)  # flatten
@@ -85,9 +81,11 @@ class DBN(nn.Module):
         return p_v, v
 
     def reconstruct(self, input_data):
-        '''
+        """
+
         go till the final layer and then reconstruct
-        '''
+        """
+
         h = input_data
         p_h = 0
         for i in range(len(self.rbm_layers)):
@@ -106,10 +104,12 @@ class DBN(nn.Module):
             train_labels,
             num_epochs=50,
             batch_size=10):
-        '''
+        """
+
         Greedy Layer By Layer training
         Keeping previous layers as static
-        '''
+        """
+
 
         tmp = train_data
 
@@ -142,10 +142,12 @@ class DBN(nn.Module):
             num_epochs,
             batch_size,
             ith_layer):
-        '''
+        """
+
         taking ith layer at once
         can be used for fine tuning
-        '''
+        """
+
         if(ith_layer - 1 > len(self.rbm_layers) or ith_layer <= 0):
             print("Layer index out of range")
             return

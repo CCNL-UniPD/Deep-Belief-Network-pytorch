@@ -12,10 +12,12 @@ BATCH_SIZE = 64
 
 
 class RBM(nn.Module):
-    '''
+    """
+
     This class defines all the functions needed for an BinaryRBN model
     where the visible and hidden units are both considered binary
-    '''
+    """
+
 
     def __init__(self,
                  visible_units=256,
@@ -27,12 +29,13 @@ class RBM(nn.Module):
                  increase_to_cd_k=False,
                  use_gpu=False
                  ):
-        '''
+        """
         Defines the model
         W:Wheights shape (visible_units,hidden_units)
         c:hidden unit bias shape (hidden_units , )
         b : visible unit bias shape(visisble_units ,)
-        '''
+        """
+
         super(RBM, self).__init__()
         self.desc = "RBM"
 
@@ -65,7 +68,7 @@ class RBM(nn.Module):
             self.v_bias = self.v_bias.cuda()
 
     def to_hidden(self, X):
-        '''
+        """
         Converts the data in visible layer to hidden layer
         also does sampling
         X here is the visible probabilities
@@ -73,7 +76,7 @@ class RBM(nn.Module):
         :return -  X_prob - new hidden layer (probabilities)
                     sample_X_prob - Gibbs sampling of hidden (1 or 0) based
                                 on the value
-        '''
+        """
         print(X.device, self.W.device)
         X_prob = torch.matmul(X, self.W)
         X_prob = torch.add(X_prob, self.h_bias)  # W.x + c
@@ -84,14 +87,14 @@ class RBM(nn.Module):
         return X_prob, sample_X_prob
 
     def to_visible(self, X):
-        '''
+        """
         reconstructs data from hidden layer
         also does sampling
         X here is the probabilities in the hidden layer
         :returns - X_prob - the new reconstructed layers(probabilities)
                     sample_X_prob - sample of new layer(Gibbs Sampling)
 
-        '''
+        """
         # computing hidden activations and then converting into probabilities
         X_prob = torch.matmul(X, self.W.transpose(0, 1))
         X_prob = torch.add(X_prob, self.v_bias)
@@ -102,24 +105,24 @@ class RBM(nn.Module):
         return X_prob, sample_X_prob
 
     def sampling(self, prob):
-        '''
+        """
         Bernoulli sampling done based on probabilities s
-        '''
+        """
         s = torch.distributions.Bernoulli(prob).sample()
         return s
 
     def reconstruction_error(self, data):
-        '''
+        """
         Computes the reconstruction error for the data
         handled by pytorch by loss functions
-        '''
+        """
         return self.contrastive_divergence(data, False)
 
     def reconstruct(self, X, n_gibbs):
-        '''
+        """
         This will reconstruct the sample with k steps of gibbs Sampling
 
-        '''
+        """
         v = X
         for i in range(n_gibbs):
             prob_h_, h = self.to_hidden(v)
@@ -183,10 +186,10 @@ class RBM(nn.Module):
         return self.to_hidden(input_data)
 
     def step(self, input_data, epoch, num_epochs):
-        '''
+        """
             Includes the foward prop plus the gradient descent
             Use this for training
-        '''
+        """
         if self.increase_to_cd_k:
             n_gibbs_sampling_steps = int(
                 math.ceil((epoch / num_epochs) * self.k))
