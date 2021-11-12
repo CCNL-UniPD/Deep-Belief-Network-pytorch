@@ -120,7 +120,7 @@ class DBN(nn.Module):
             self.rbm_layers[i].train(_dataloader, num_epochs, batch_size)
             # print(train_data.shape)
             v = tmp.view((tmp.shape[0], -1)).type(torch.FloatTensor)  # flatten
-            if self.use_gpu():
+            if self.rbm_layers[i].use_gpu:
                 v = v.cuda()
             p_v, v = self.rbm_layers[i].forward(v)
             tmp = v
