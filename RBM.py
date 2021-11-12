@@ -40,6 +40,9 @@ class RBM(nn.Module):
         self.k = k
         self.learning_rate = learning_rate
         self.learning_rate_decay = learning_rate_decay
+        self.weight_decay = 0.0002
+        self.momentum = 0.5
+        self.final_momentum = 0.9
         self.xavier_init = xavier_init
         self.increase_to_cd_k = increase_to_cd_k
         self.use_gpu = use_gpu
@@ -155,17 +158,21 @@ class RBM(nn.Module):
             batch_size = self.batch_size
 
             g = (positive_associations - negative_associations)
-            grad_update = g / batch_size
+            grad_update = g / batch_size - self.weight_decay * self.W
             v_bias_update = torch.sum(
                 input_data - negative_visible_probabilities,
-                dim=0) / batch_size
+                dim=0) / batch_size - self.weight_decay * self.v_bias
             h_bias_update = torch.sum(
                 positive_hidden_probabilities - negative_hidden_probabilities,
-                dim=0) / batch_size
+                dim=0) / batch_size - self.weight_decay * self.h_bias
 
-            self.W += lr * grad_update
-            self.v_bias += lr * v_bias_update
-            self.h_bias += lr * h_bias_update
+            self.W += self.grad_update * self.momentum + lr * grad_update
+            self.v_bias += self.v_bias_update * self.momentum + self.lr * v_bias_update
+            self.h_bias += self.h_bias_update * self.momentum + lr * h_bias_update
+
+            self.grad_update = grad_update
+            self.h_bias_update = h_bias_update
+            self.v_bias_update = v_bias_update
 
         # Compute reconstruction error
         error = torch.mean(
@@ -192,6 +199,9 @@ class RBM(nn.Module):
             lr = self.learning_rate / epoch
         else:
             lr = self.learning_rate
+
+        if self.epoch > num_epochs//2:
+            self.momentum = self.final_momentum
 
         return self.contrastive_divergence(input_data, True,
                                            n_gibbs_sampling_steps, lr)
