@@ -69,6 +69,9 @@ class RBM(nn.Module):
             self.W = self.W.cuda()
             self.h_bias = self.h_bias.cuda()
             self.v_bias = self.v_bias.cuda()
+            self.v_bias_update = self.v_bias_update.cuda()
+            self.h_bias_update = self.h_bias_update.cuda()
+            self.grad_update = self.grad_update.cuda()
 
     def to_hidden(self, X):
         """
