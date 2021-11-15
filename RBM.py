@@ -206,7 +206,7 @@ class RBM(nn.Module):
         else:
             lr = self.learning_rate
 
-        if epoch > num_epochs//2:
+        if epoch > 5:
             self.momentum = self.final_momentum
 
         return self.contrastive_divergence(input_data, True,
