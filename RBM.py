@@ -61,6 +61,10 @@ class RBM(nn.Module):
         self.h_bias = torch.zeros(self.hidden_units)  # hidden layer bias
         self.v_bias = torch.zeros(self.visible_units)  # visible layer bias
 
+        self.v_bias_update = torch.zeros(self.visible_units)
+        self.h_bias_update = torch.zeros(self.hidden_units)
+        self.grad_update = torch.zeros(self.visible_units, self.hidden_units)
+
         if self.use_gpu:
             self.W = self.W.cuda()
             self.h_bias = self.h_bias.cuda()
@@ -153,21 +157,20 @@ class RBM(nn.Module):
             negative_visible_probabilities.t(), negative_hidden_probabilities)
 
         # Update parameters
-        if (training):
-
+        if training:
             batch_size = self.batch_size
 
             g = (positive_associations - negative_associations)
             grad_update = g / batch_size - self.weight_decay * self.W
             v_bias_update = torch.sum(
                 input_data - negative_visible_probabilities,
-                dim=0) / batch_size - self.weight_decay * self.v_bias
+                dim=0) / batch_size
             h_bias_update = torch.sum(
                 positive_hidden_probabilities - negative_hidden_probabilities,
-                dim=0) / batch_size - self.weight_decay * self.h_bias
+                dim=0) / batch_size
 
             self.W += self.grad_update * self.momentum + lr * grad_update
-            self.v_bias += self.v_bias_update * self.momentum + self.lr * v_bias_update
+            self.v_bias += self.v_bias_update * self.momentum + lr * v_bias_update
             self.h_bias += self.h_bias_update * self.momentum + lr * h_bias_update
 
             self.grad_update = grad_update
