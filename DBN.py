@@ -12,6 +12,9 @@ class DBN(nn.Module):
                  k=2,
                  learning_rate=1e-5,
                  learning_rate_decay=False,
+                 weight_decay=.0002,
+                 initial_momentum=.5,
+                 final_momentum=.9,
                  xavier_init=False,
                  increase_to_cd_k=False,
                  use_gpu=False):
@@ -33,6 +36,9 @@ class DBN(nn.Module):
                       k=k,
                       learning_rate=learning_rate,
                       learning_rate_decay=learning_rate_decay,
+                      weight_decay=weight_decay,
+                      momentum=initial_momentum,
+                      final_momentum=final_momentum,
                       xavier_init=xavier_init,
                       increase_to_cd_k=increase_to_cd_k,
                       use_gpu=use_gpu)
