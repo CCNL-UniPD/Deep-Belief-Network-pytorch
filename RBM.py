@@ -23,6 +23,9 @@ class RBM(nn.Module):
                  k=2,
                  learning_rate=1e-5,
                  learning_rate_decay=False,
+                 weight_decay=.0002,
+                 initial_momentum=.5,
+                 final_momentum=.9,
                  xavier_init=False,
                  increase_to_cd_k=False,
                  use_gpu=False):
@@ -40,9 +43,9 @@ class RBM(nn.Module):
         self.k = k
         self.learning_rate = learning_rate
         self.learning_rate_decay = learning_rate_decay
-        self.weight_decay = 0.0002
-        self.momentum = 0.5
-        self.final_momentum = 0.9
+        self.weight_decay = weight_decay
+        self.momentum = initial_momentum
+        self.final_momentum = final_momentum
         self.xavier_init = xavier_init
         self.increase_to_cd_k = increase_to_cd_k
         self.use_gpu = use_gpu
