@@ -224,7 +224,7 @@ class RBM(nn.Module):
             train_loader = torch.utils.data.DataLoader(train_dataloader,
                                                        batch_size=batch_size)
 
-        print("|Epoch |mean_cost |std_cost  |mean_grad |std_grad  |")
+        print("|Epoch |avg_rec_err |std_rec_err  |mean_grad |std_grad  |")
         for epoch in range(1, num_epochs + 1):
             epoch_err = 0.0
             n_batches = int(len(train_loader))
@@ -242,8 +242,8 @@ class RBM(nn.Module):
                 cost_[i - 1], grad_[i - 1] = self.step(batch, epoch,
                                                        num_epochs)
 
-            print("|{:02d}    |{:.4f}    "
-                  "|{:.4f}    |{:.4f} "
+            print("|{:02d}    |{:.4f}   "
+                  "|{:.4f}   |{:.4f} "
                   "|{:.4f}   |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
 
         return
