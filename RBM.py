@@ -146,7 +146,7 @@ class RBM(nn.Module):
 
         # calculating W via positive side
         positive_associations = torch.matmul(input_data.t(),
-                                             positive_hidden_act)
+                                             positive_hidden_probabilities)
 
         # negative phase
         hidden_activations = positive_hidden_act
