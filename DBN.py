@@ -129,7 +129,7 @@ class DBN(nn.Module):
             if self.rbm_layers[i].use_gpu:
                 v = v.cuda()
             p_v, v = self.rbm_layers[i].forward(v)
-            tmp = v
+            tmp = p_v
             # print(v.shape)
         return
 
