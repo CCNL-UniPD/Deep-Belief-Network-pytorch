@@ -118,10 +118,10 @@ class DBN(nn.Module):
             tensor_x = tmp.type(torch.FloatTensor)
             tensor_y = train_labels.type(torch.FloatTensor)
             _dataset = torch.utils.data.TensorDataset(
-                tensor_x, tensor_y)  # create your datset
+                tensor_x, tensor_y)  # create your dataset
             _dataloader = torch.utils.data.DataLoader(
                 _dataset, batch_size=batch_size,
-                drop_last=True)  # create your dataloader
+                drop_last=True)  # create your DataLoader
 
             self.rbm_layers[i].train(_dataloader, num_epochs, batch_size)
             # print(train_data.shape)
