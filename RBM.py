@@ -167,27 +167,23 @@ class RBM(nn.Module):
             batch_size = self.batch_size
 
             g = (positive_associations - negative_associations)
-            grad_update = g / batch_size - self.weight_decay * self.W
-            v_bias_update = torch.sum(
+            self.grad_update = self.momentum * self.grad_update + lr * g / batch_size - self.weight_decay * self.W
+            self.v_bias_update = self.momentum * self.h_bias_update + lr * torch.sum(
                 input_data - negative_visible_probabilities,
                 dim=0) / batch_size
-            h_bias_update = torch.sum(
+            self.h_bias_update = self.momentum * self.h_bias_update + lr * torch.sum(
                 positive_hidden_probabilities - negative_hidden_probabilities,
                 dim=0) / batch_size
 
-            self.W += self.grad_update * self.momentum + lr * grad_update
-            self.v_bias += self.v_bias_update * self.momentum + lr * v_bias_update
-            self.h_bias += self.h_bias_update * self.momentum + lr * h_bias_update
-
-            self.grad_update = grad_update
-            self.h_bias_update = h_bias_update
-            self.v_bias_update = v_bias_update
+            self.W += self.grad_update
+            self.v_bias += self.v_bias_update
+            self.h_bias += self.h_bias_update
 
         # Compute reconstruction error
         error = torch.mean(
             torch.sum((input_data - negative_visible_probabilities)**2, dim=0))
 
-        return error, torch.sum(torch.abs(grad_update))
+        return error, torch.sum(torch.abs(self.grad_update))
 
     def forward(self, input_data):
         """data->hidden"""
