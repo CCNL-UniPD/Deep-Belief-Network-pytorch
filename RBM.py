@@ -54,7 +54,7 @@ class RBM(nn.Module):
         # Initialization
         if not self.xavier_init:
             self.W = torch.randn(self.visible_units,
-                                 self.hidden_units) * 0.01  # weights
+                                 self.hidden_units) * 0.1  # weights
         else:
             self.xavier_value = torch.sqrt(
                 torch.FloatTensor(
