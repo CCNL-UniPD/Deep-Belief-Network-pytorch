@@ -1,3 +1,6 @@
+"""This script implements a Restricted Boltzmann Machine.
+The RBM can be trained with the contrastive divergence algorithm and can be embedded in a hierarchical
+model in the DBN class."""
 import torch
 import torchvision
 import torchvision.transforms as transforms
@@ -12,10 +15,10 @@ BATCH_SIZE = 64
 
 
 class RBM(nn.Module):
-    """
+    """This class defines all the functions needed for an BinaryRBN model
+    where the visible and hidden units are both considered binary.
 
-    This class defines all the functions needed for an BinaryRBN model
-    where the visible and hidden units are both considered binary
+
     """
     def __init__(self,
                  visible_units=256,
@@ -77,14 +80,15 @@ class RBM(nn.Module):
             self.grad_update = self.grad_update.cuda()
 
     def to_hidden(self, X):
-        """
-        Converts the data in visible layer to hidden layer
+        """Converts the data in visible layer to hidden layer
         also does sampling
         X here is the visible probabilities
+
         :param X: torch tensor shape = (n_samples , n_features)
         :return -  X_prob - new hidden layer (probabilities)
                     sample_X_prob - Gibbs sampling of hidden (1 or 0) based
                                 on the value
+
         """
         X_prob = torch.matmul(X, self.W)
         X_prob = torch.add(X_prob, self.h_bias)  # W.x + c
@@ -95,12 +99,14 @@ class RBM(nn.Module):
         return X_prob, sample_X_prob
 
     def to_visible(self, X):
-        """
-        reconstructs data from hidden layer
+        """reconstructs data from hidden layer
         also does sampling
         X here is the probabilities in the hidden layer
-        :returns - X_prob - the new reconstructed layers(probabilities)
+
+        :param X: 
+        :returns: X_prob - the new reconstructed layers(probabilities)
                     sample_X_prob - sample of new layer(Gibbs Sampling)
+
         """
         # computing hidden activations and then converting into probabilities
         X_prob = torch.matmul(X, self.W.transpose(0, 1))
@@ -112,22 +118,29 @@ class RBM(nn.Module):
         return X_prob, sample_X_prob
 
     def sampling(self, prob):
-        """
-        Bernoulli sampling done based on probabilities s
+        """Bernoulli sampling done based on probabilities s
+
+        :param prob: 
+
         """
         s = torch.distributions.Bernoulli(prob).sample()
         return s
 
     def reconstruction_error(self, data):
-        """
-        Computes the reconstruction error for the data
+        """Computes the reconstruction error for the data
         handled by pytorch by loss functions
+
+        :param data: 
+
         """
         return self.contrastive_divergence(data, False)
 
     def reconstruct(self, X, n_gibbs):
-        """
-        This will reconstruct the sample with k steps of gibbs Sampling
+        """This will reconstruct the sample with k steps of gibbs Sampling
+
+        :param X: 
+        :param n_gibbs: 
+
         """
         v = X
         for i in range(n_gibbs):
@@ -140,6 +153,14 @@ class RBM(nn.Module):
                                training=True,
                                n_gibbs_sampling_steps=1,
                                lr=0.001):
+        """
+
+        :param input_data: 
+        :param training:  (Default value = True)
+        :param n_gibbs_sampling_steps:  (Default value = 1)
+        :param lr:  (Default value = 0.001)
+
+        """
         # positive phase
         positive_hidden_probabilities, positive_hidden_act = self.to_hidden(
             input_data)
@@ -186,13 +207,21 @@ class RBM(nn.Module):
         return error, torch.sum(torch.abs(self.grad_update))
 
     def forward(self, input_data):
-        """data->hidden"""
+        """data->hidden
+
+        :param input_data: 
+
+        """
         return self.to_hidden(input_data)
 
     def step(self, input_data, epoch, num_epochs):
-        """
-            Includes the foward prop plus the gradient descent
+        """Includes the foward prop plus the gradient descent
             Use this for training
+
+        :param input_data: 
+        :param epoch: 
+        :param num_epochs: 
+
         """
         if self.increase_to_cd_k:
             n_gibbs_sampling_steps = int(
@@ -212,6 +241,13 @@ class RBM(nn.Module):
                                            n_gibbs_sampling_steps, lr)
 
     def train(self, train_dataloader, num_epochs=50, batch_size=16):
+        """
+
+        :param train_dataloader: 
+        :param num_epochs:  (Default value = 50)
+        :param batch_size:  (Default value = 16)
+
+        """
 
         self.batch_size = batch_size
         if (isinstance(train_dataloader, torch.utils.data.DataLoader)):
