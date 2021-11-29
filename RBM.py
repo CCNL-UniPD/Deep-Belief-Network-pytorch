@@ -167,7 +167,7 @@ class RBM(nn.Module):
             batch_size = self.batch_size
 
             g = (positive_associations - negative_associations)
-            self.grad_update = self.momentum * self.grad_update + lr * g / batch_size - self.weight_decay * self.W
+            self.grad_update = self.momentum * self.grad_update + lr * (g / batch_size - self.weight_decay * self.W)
             self.v_bias_update = self.momentum * self.v_bias_update + lr * torch.sum(
                 input_data - negative_visible_probabilities,
                 dim=0) / batch_size
