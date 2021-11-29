@@ -1,3 +1,5 @@
+"""This file contains the implementation of a Deep Belief Network, stacking several Restricted Boltzmann Machines
+implemented in RBM.py."""
 import torch
 from torch.autograd import Variable
 import torch.nn as nn
@@ -6,6 +8,7 @@ from RBM import RBM
 
 
 class DBN(nn.Module):
+    """Class implementing a DBN using the basic RBM class."""
     def __init__(self,
                  visible_units=256,
                  hidden_units=[64, 100],
@@ -73,9 +76,10 @@ class DBN(nn.Module):
             self.register_parameter('bias_gen%i' % i, self.bias_gen[i])
 
     def forward(self, input_data):
-        """
-        running the forward pass
+        """running the forward pass
         do not confuse with training this just runs a foward pass
+
+        :param input_data:
         """
         v = input_data
         for i in range(len(self.rbm_layers)):
@@ -84,8 +88,9 @@ class DBN(nn.Module):
         return p_v, v
 
     def reconstruct(self, input_data):
-        """
-        go till the final layer and then reconstruct
+        """go till the final layer and then reconstruct
+
+        :param input_data:
         """
         h = input_data
         p_h = 0
@@ -104,9 +109,13 @@ class DBN(nn.Module):
                      train_labels,
                      num_epochs=50,
                      batch_size=10):
-        """
-        Greedy Layer By Layer training
+        """Greedy Layer By Layer training
         Keeping previous layers as static
+
+        :param train_data: 
+        :param train_labels: 
+        :param num_epochs:  (Default value = 50)
+        :param batch_size:  (Default value = 10)
         """
         tmp = train_data
 
@@ -135,12 +144,15 @@ class DBN(nn.Module):
 
     def train_ith(self, train_data, train_labels, num_epochs, batch_size,
                   ith_layer):
-        """
-
-        taking ith layer at once
+        """taking ith layer at once
         can be used for fine tuning
-        """
 
+        :param train_data: 
+        :param train_labels: 
+        :param num_epochs: 
+        :param batch_size: 
+        :param ith_layer:
+        """
         if (ith_layer - 1 > len(self.rbm_layers) or ith_layer <= 0):
             print("Layer index out of range")
             return
