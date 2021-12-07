@@ -83,7 +83,6 @@ class DBN(nn.Module):
         """
         v = input_data
         for i in range(len(self.rbm_layers)):
-            print(v.device)
             v = v.view((v.shape[0], -1))  # flatten
             p_v, v = self.rbm_layers[i].to_hidden(v)
         return p_v, v
