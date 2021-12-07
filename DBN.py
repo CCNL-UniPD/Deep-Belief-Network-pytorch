@@ -77,13 +77,13 @@ class DBN(nn.Module):
 
     def forward(self, input_data):
         """running the forward pass
-        do not confuse with training this just runs a foward pass
+        do not confuse with training this just runs a forward pass
 
         :param input_data:
         """
         v = input_data
         for i in range(len(self.rbm_layers)):
-            v = v.view((v.shape[0], -1)).type(torch.FloatTensor)  # flatten
+            v = v.view((v.shape[0], -1))  # flatten
             p_v, v = self.rbm_layers[i].to_hidden(v)
         return p_v, v
 
