@@ -23,6 +23,7 @@ class DBN(nn.Module):
                  use_gpu=False):
         super(DBN, self).__init__()
 
+        self.device = torch.device("cuda") if use_gpu else torch.device("cpu")
         self.n_layers = len(hidden_units)
         self.rbm_layers = []
         self.rbm_nodes = []
@@ -95,12 +96,12 @@ class DBN(nn.Module):
         h = input_data
         p_h = 0
         for i in range(len(self.rbm_layers)):
-            h = h.view((h.shape[0], -1)).type(torch.FloatTensor)  # flatten
+            h = h.view((h.shape[0], -1)).type(torch.FloatTensor).to(self.device)  # flatten
             p_h, h = self.rbm_layers[i].to_hidden(h)
 
         v = h
         for i in range(len(self.rbm_layers) - 1, -1, -1):
-            v = v.view((v.shape[0], -1)).type(torch.FloatTensor)
+            v = v.view((v.shape[0], -1)).type(torch.FloatTensor).to(self.device)
             p_v, v = self.rbm_layers[i].to_visible(v)
         return p_v, v
 
