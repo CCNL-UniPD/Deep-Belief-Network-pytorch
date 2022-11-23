@@ -264,8 +264,8 @@ class RBM(nn.Module):
                                                        num_epochs)
 
             if epoch % 10 == 0:
-                print("|{:02d}    |{:.4f}   "
-                      "|{:.4f}   |{:.4f} "
-                      "|{:.4f}   |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
+                print("|{:02d}    |{:.4f}     "
+                      "|{:.4f}       |{:.4f}   "
+                      "|{:.4f}     |".format(epoch, torch.mean(cost_), torch.std(cost_), torch.mean(grad_), torch.std(grad_)))
 
         return
