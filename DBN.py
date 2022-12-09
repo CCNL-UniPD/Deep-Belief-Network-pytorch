@@ -93,16 +93,15 @@ class DBN(nn.Module):
 
         :param input_data:
         """
-        h = input_data
-        p_h = 0
+        p_h = input_data
         for i in range(len(self.rbm_layers)):
-            h = h.view((h.shape[0], -1)).type(torch.FloatTensor).to(self.device)  # flatten
-            p_h, h = self.rbm_layers[i].to_hidden(h)
+            p_h = p_h.view((p_h.shape[0], -1)).type(torch.FloatTensor).to(self.device)  # flatten
+            p_h, h = self.rbm_layers[i].to_hidden(p_h)
 
-        v = h
+        p_v = p_h
         for i in range(len(self.rbm_layers) - 1, -1, -1):
-            v = v.view((v.shape[0], -1)).type(torch.FloatTensor).to(self.device)
-            p_v, v = self.rbm_layers[i].to_visible(v)
+            p_v = p_v.view((p_v.shape[0], -1)).type(torch.FloatTensor).to(self.device)
+            p_v, v = self.rbm_layers[i].to_visible(p_v)
         return p_v, v
 
     def train_static(self,
